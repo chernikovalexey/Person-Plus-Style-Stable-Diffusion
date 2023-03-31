@@ -53,6 +53,13 @@ def main():
         help="the prompt to render"
     )
     parser.add_argument(
+        "--negative_prompt",
+        type=str,
+        nargs="?",
+        default="",
+        help="things that need to be NOT in the image"
+    )
+    parser.add_argument(
         "--outdir",
         type=str,
         nargs="?",
@@ -236,7 +243,7 @@ def main():
                 all_samples = list()
                 for n in trange(opt.n_iter, desc="Sampling"):
                     for prompts in tqdm(data, desc="data"):
-                        uc = None
+                        uc = model.get_learned_conditioning(batch_size * [opt.negative_prompt]) # negative prompts
                         if opt.scale != 1.0:
                             uc = model.get_learned_conditioning(batch_size * [""])
                         if isinstance(prompts, tuple):
